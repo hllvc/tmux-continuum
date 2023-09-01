@@ -47,3 +47,8 @@ another_tmux_server_running_on_startup() {
 	# there are 2 tmux processes (current tmux server + 1) on tmux startup
 	[ "$(number_tmux_processes_except_current_server)" -gt 1 ]
 }
+
+multiple_sockets_enabled() {
+  local multiple_sockets_value="$(get_tmux_option "$multiple_sockets_option" "$multiple_sockets_default")"
+  [ "$multiple_sockets_value" == "on" ]
+}
