@@ -63,6 +63,7 @@ update_tmux_option() {
 	set_tmux_option "$option" "$new_option_value"
 }
 
+
 main() {
 	if supported_tmux_version_ok; then
 		handle_tmux_automatic_start
@@ -70,7 +71,7 @@ main() {
 		# Advanced edge case handling: start auto-saving only if this is the
 		# only tmux server. We don't want saved files from more environments to
 		# overwrite each other.
-		if ! another_tmux_server_running; then
+		if ! another_tmux_server_running || multiple_sockets_enabled; then
 			# give user a chance to restore previously saved session
 			delay_saving_environment_on_first_plugin_load
 			add_resurrect_save_interpolation

@@ -7,6 +7,10 @@ resurrect_restore_path_option="@resurrect-restore-script-path"
 auto_save_interval_option="@continuum-save-interval"
 auto_save_interval_default="15"
 
+# enable plugin even if multiple sockets exist
+multiple_sockets_option="@continuum-multiple-sockets"
+multiple_sockets_default="off"
+
 # time when the tmux environment was last saved (unix timestamp)
 last_auto_save_option="@continuum-save-last-timestamp"
 
