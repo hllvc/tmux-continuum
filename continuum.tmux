@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -x
-
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 source "$CURRENT_DIR/scripts/helpers.sh"
@@ -48,7 +46,7 @@ just_started_tmux_server() {
 	tmux_start_time="$(tmux display-message -p -F '#{start_time}')"
 	local restore_max_delay
 	restore_max_delay="$(get_tmux_option "$auto_restore_max_delay_option" "${auto_restore_max_delay_default}")"
-	[ "$tmux_start_time" == "" ] || [ "$tmux_start_time" -gt "$(($(date +%s)-${restore_max_delay}))" ]
+	[ -n "$tmux_start_time" ] && [ "$tmux_start_time" -gt "$(($(date +%s) - restore_max_delay))" ]
 }
 
 start_auto_restore_in_background() {

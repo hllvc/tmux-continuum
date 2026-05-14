@@ -1,33 +1,31 @@
 #!/usr/bin/env bash
 
 VERSION="$1"
-UNSUPPORTED_MSG="$2"
 
-# this is used to get "clean" integer version number. Examples:
-# `tmux 1.9` => `19`
-# `1.9a`     => `19`
-get_digits_from_string() {
-	local string="$1"
-	local only_digits="$(echo "$string" | tr -dC '[:digit:]')"
-	echo "$only_digits"
+# Parse "major.minor" from a version string like "tmux 3.4" or "1.9a".
+parse_major() { echo "${1%%.*}"; }
+parse_minor() { local m="${1#*.}"; echo "${m%%[^0-9]*}"; }
+
+tmux_version_string() {
+	tmux -V | sed 's/tmux //'
 }
 
-tmux_version_int() {
-	local tmux_version_string=$(tmux -V)
-	echo "$(get_digits_from_string "$tmux_version_string")"
-}
-
-exit_if_unsupported_version() {
-	local current_version="$1"
-	local supported_version="$2"
-	if [ "$current_version" -lt "$supported_version" ]; then
-		exit 1
-	fi
+version_at_least() {
+	local required="$1"
+	local current
+	current="$(tmux_version_string)"
+	local req_major req_minor cur_major cur_minor
+	req_major="$(parse_major "$required")"
+	req_minor="$(parse_minor "$required")"
+	cur_major="$(parse_major "$current")"
+	cur_minor="$(parse_minor "$current")"
+	[ "$cur_major" -gt "$req_major" ] || \
+		{ [ "$cur_major" -eq "$req_major" ] && [ "${cur_minor:-0}" -ge "$req_minor" ]; }
 }
 
 main() {
-	local supported_version_int="$(get_digits_from_string "$VERSION")"
-	local current_version_int="$(tmux_version_int)"
-	exit_if_unsupported_version "$current_version_int" "$supported_version_int"
+	if ! version_at_least "$VERSION"; then
+		exit 1
+	fi
 }
 main

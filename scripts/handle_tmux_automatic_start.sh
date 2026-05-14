@@ -11,11 +11,11 @@ is_tmux_automatic_start_enabled() {
 }
 
 is_osx() {
-	[ $(uname) == "Darwin" ]
+	[[ $(uname) == "Darwin" ]]
 }
 
 is_systemd() {
-	[ $(ps -o comm= -p1) == 'systemd' ]
+	[[ $(ps -o comm= -p1) == "systemd" ]]
 }
 
 main() {

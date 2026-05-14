@@ -24,9 +24,11 @@ current_tmux_server_pid() {
 
 all_tmux_processes() {
 	# ignores `tmux source-file .tmux.conf` command used to reload tmux.conf
-	local user_id=$(id -u)
-	ps -u $user_id -o "command pid" |
-		\grep "^tmux" |
+	# match "tmux " exactly so tools like tmuxinator/tmuxp are not counted
+	local user_id
+	user_id=$(id -u)
+	ps -u "$user_id" -o "command pid" |
+		\grep -E "^tmux[[:space:]]" |
 		\grep -v "^tmux source"
 }
 
@@ -49,6 +51,6 @@ another_tmux_server_running_on_startup() {
 }
 
 multiple_sockets_enabled() {
-  local multiple_sockets_value="$(get_tmux_option "$multiple_sockets_option" "$multiple_sockets_default")"
-  [ "$multiple_sockets_value" == "on" ]
+	local multiple_sockets_value="$(get_tmux_option "$multiple_sockets_option" "$multiple_sockets_default")"
+	[ "$multiple_sockets_value" == "on" ]
 }

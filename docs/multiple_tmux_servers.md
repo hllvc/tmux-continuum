@@ -18,3 +18,20 @@ restore" (if enabled) and will start "auto saving".
 "Auto restore" or "auto saving" **will not** happen for the second server that
 was started later with the `$ tmux -S/tmp/foo` command. The plugin will
 detect the presence of another server (`$ tmux`) and give it precedence.
+
+### Opting in to saving on all sockets
+
+If you intentionally run separate tmux servers on different sockets and want
+each to save and restore independently, set the following option in your
+`.tmux.conf`:
+
+```
+set -g @continuum-multiple-sockets on
+```
+
+**Trade-off:** When this option is on, all active tmux servers write to the
+same tmux-resurrect save file. If two servers save at nearly the same time the
+last write wins, potentially overwriting the other server's session. This is
+the same race that the default (off) behaviour is designed to prevent. Only
+enable this if you understand the trade-off and your workflow avoids concurrent
+saves (e.g. only one server is active at a time).
